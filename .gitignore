@@ -1,0 +1,7 @@
+.idea/
+mutagen.yml.lock
+.vscode
+mysql/
+mariadb-init/
+web/
+vendor/
