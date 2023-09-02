@@ -359,6 +359,8 @@ select * from key_value_expire;  --does not return anything
 #### The Storage setWithExpire function
 
 * to be found at: _docker4drupal/web/core/lib/Drupal/Core/KeyValueStore/DatabaseStorageExpirable.php_
+  * in the constructor: __this->table=key_value_expire__
+  * the collection is __"tempstore.private.$collection"__
 ```php
   protected function doSetWithExpire($key, $value, $expire) {
     $this->connection->merge($this->table)
@@ -373,12 +375,32 @@ select * from key_value_expire;  --does not return anything
       ->execute();
   }
 ```
-
-```yaml
+* back to the merge method of the Connection class
+  * reminder:
 ```yaml
  database:
     class: Drupal\Core\Database\Connection
     factory: Drupal\Core\Database\Database::getConnection
     arguments: [default]
 ```
+#### Merge.php class
+* which sends us to the docker4drupal/web/core/lib/Drupal/Core/Database/Query/Merge.php class:
+  * which is an abstract class:
+* keys creates the conditions
+```php
+$this->conditions[] = [
+      'field' => $field,
+      'value' => $value,
+      'operator' => $operator, //operator by default is =
+    ];
 ```
+* _fields_ function of the Merge class:
+```php 
+foreach ($fields as $key => $value) {
+  $this->insertFields[$key] = $value;
+  $this->updateFields[$key] = $value;
+}
+```
+* everything is in the _execute_ function:
+  * from Line 371
+  * it inserts or updates depending of a condition table which by default is my table
