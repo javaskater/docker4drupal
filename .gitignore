@@ -5,3 +5,4 @@ mysql/
 mariadb-init/
 web/
 vendor/
+/config/sync/
